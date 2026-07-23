@@ -37,7 +37,7 @@ export default defineConfig({
     viewport: { width: 1080, height: 1920 },
     actionTimeout: 30000,
     navigationTimeout: 7000,
-     browserName: 'chromium',
+     browserName: 'webkit',
 
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
@@ -46,20 +46,20 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+    // {
+    //   name: 'chromium',
+    //   use: { ...devices['Desktop Chrome'] },
+    // },
 
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
     // },
 
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
 
     /* Test against mobile viewports. */
     // {

@@ -175,8 +175,8 @@ test("hotelproject", async ({ page }) => {
 
   //canceling the booking and verifying the cancel message
   await txtbookingsrch.waitFor();
-  //await txtbookingsrch.pressSequentially(finalbkngcode);
-  await txtbookingsrch.fill(finalbkngcode);
+  await txtbookingsrch.pressSequentially(finalbkngcode);
+  //await txtbookingsrch.fill(finalbkngcode);
   await page.waitForLoadState("networkidle");
   const btnCancel = page.locator("//a[text()='Cancel']");
   await btnCancel.click();
