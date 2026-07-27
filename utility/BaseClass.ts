@@ -371,10 +371,7 @@ export class BaseClass {
 
   //Switch window using Index
   async windowChangeUsingIndex(locator: Locator, index: number): Promise<Page> {
-    await Promise.all([
-      this.context.waitForEvent("page"),
-      locator.click(),
-    ]);
+    await Promise.all([this.context.waitForEvent("page"), locator.click()]);
 
     const pages = this.context.pages();
     const selectedPage = pages[index];
@@ -434,5 +431,9 @@ export class BaseClass {
   //Scroll into view using elemnt
   async scrollIntoView(locator: Locator) {
     await locator.scrollIntoViewIfNeeded();
+  }
+//mouse Over
+  async hover(locator: Locator) {
+    await locator.hover();
   }
 }
