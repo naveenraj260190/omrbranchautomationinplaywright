@@ -40,6 +40,28 @@ export class BaseClass {
     await this.page.setViewportSize({ width: 1200, height: 1000 });
   }
 
+  //Browser launch multiple area
+
+  async launchBrowser(browserType: "chrome" | "firefox" | "webkit") {
+    switch(browserType){
+        case "chrome":
+            this.browser = await chromium.launch();
+            break;
+
+        case "firefox":
+            this.browser = await firefox.launch();
+            break;
+
+        case "webkit":
+            this.browser = await webkit.launch();
+            break;
+    }
+
+    this.context = await this.browser.newContext();
+    this.page = await this.context.newPage();
+    await this.page.setViewportSize({ width: 1200, height: 1000 });
+}
+
   // enter URL
   async enterApplnUrl(url: string) {
     await this.page.goto(url);
@@ -333,5 +355,5 @@ export class BaseClass {
   }
 
 
-  
+
 }
