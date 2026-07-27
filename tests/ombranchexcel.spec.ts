@@ -26,7 +26,7 @@ test("dataread", async ({ page }) => {
     noOfChild: number;
   };
   // assigning sheet name
-  let sheetname = "omrBranchTest";
+  let sheetname :string = "omrBranchTest";
   //Mention the workbook -> instructing to read excel file
   let workbook: XLSX.WorkBook = XLSX.readFile(pathforexcel);
   //	- Get the required sheet using the sheet name
