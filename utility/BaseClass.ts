@@ -43,24 +43,24 @@ export class BaseClass {
   //Browser launch multiple area
 
   async launchBrowser(browserType: "chrome" | "firefox" | "webkit") {
-    switch(browserType){
-        case "chrome":
-            this.browser = await chromium.launch();
-            break;
+    switch (browserType) {
+      case "chrome":
+        this.browser = await chromium.launch();
+        break;
 
-        case "firefox":
-            this.browser = await firefox.launch();
-            break;
+      case "firefox":
+        this.browser = await firefox.launch();
+        break;
 
-        case "webkit":
-            this.browser = await webkit.launch();
-            break;
+      case "webkit":
+        this.browser = await webkit.launch();
+        break;
     }
 
     this.context = await this.browser.newContext();
     this.page = await this.context.newPage();
     await this.page.setViewportSize({ width: 1200, height: 1000 });
-}
+  }
 
   // enter URL
   async enterApplnUrl(url: string) {
@@ -99,7 +99,7 @@ export class BaseClass {
 
   //Select Option BY Value
 
-  async selectOptionByvalue(locator: Locator, text: string) {
+  async selectOptionByValue(locator: Locator, text: string) {
     await locator.selectOption({ value: text });
   }
 
@@ -119,13 +119,13 @@ export class BaseClass {
   }
 
   //close browser
-  async BrowserClose() {
+  async browserClose() {
     await this.browser.close();
   }
 
   //close context
 
-  async ContextClose() {
+  async contextClose() {
     await this.context.close();
   }
 
@@ -146,11 +146,11 @@ export class BaseClass {
 
   //Navigate Fwd
   async goForward() {
-    this.page.goForward();
+    await this.page.goForward();
   }
 
   //clear element
-  async clearelement(locator: Locator) {
+  async clearElement(locator: Locator) {
     await locator.clear();
   }
 
@@ -178,42 +178,43 @@ export class BaseClass {
   }
 
   //Get Attribute Value
-  async getAttribute(locator: Locator): Promise<String | null> {
+  async getAttribute(locator: Locator): Promise<string | null> {
     let value = await locator.getAttribute("value");
     return value;
   }
 
   //Get element count
-  async getElementCount(locator: Locator) {
-    await locator.count();
+  async getElementCount(locator: Locator): Promise<number> {
+    let count = await locator.count();
+    return count;
   }
 
   //Validate iselementVisible
-  async iselementVisible(locator: Locator): Promise<boolean> {
+  async isElementVisible(locator: Locator): Promise<boolean> {
     let element = await locator.isVisible();
     return element;
   }
 
   //Validate isElementHidden
-  async iselementHidden(locator: Locator): Promise<boolean> {
+  async isElementHidden(locator: Locator): Promise<boolean> {
     let element = await locator.isHidden();
     return element;
   }
 
   //Validate iselementenabled
-  async iselementEnabled(locator: Locator): Promise<boolean> {
+  async isElementEnabled(locator: Locator): Promise<boolean> {
     let element = await locator.isEnabled();
     return element;
   }
 
   //Validate isElementchecked
-  async iselementChecked(locator: Locator): Promise<boolean> {
+  async isElementChecked(locator: Locator): Promise<boolean> {
     let element = await locator.isChecked();
     return element;
   }
 
   //Validate isElementEditable
-  async iselementEditable(locator: Locator): Promise<boolean> {
+  async isElementEditable(locator: Locator): Promise<boolean> {
     let element = await locator.isEditable();
     return element;
   }
@@ -275,8 +276,11 @@ export class BaseClass {
   }
 
   //Take scrnshot for Particular element
-  takeParticularElementScreenshot(fileURLToPath: string, locator: Locator) {
-    locator.screenshot({
+  async takeParticularElementScreenshot(
+    fileURLToPath: string,
+    locator: Locator,
+  ) {
+    await locator.screenshot({
       path: fileURLToPath,
     });
   }
@@ -287,7 +291,7 @@ export class BaseClass {
   }
 
   //wait For element until is hidden
-  async waitUntilElementhidden(locator: Locator) {
+  async waitUntilElementHidden(locator: Locator) {
     await locator.waitFor({ state: "hidden" });
   }
 
@@ -322,8 +326,8 @@ export class BaseClass {
   }
 
   //Static wait
-  async staticWait(secs: number) {
-    await this.page.waitForTimeout(secs);
+  async staticWait(millisecs: number) {
+    await this.page.waitForTimeout(millisecs);
   }
 
   //Handle Accept Alert Once
@@ -354,6 +358,81 @@ export class BaseClass {
     });
   }
 
+  //Switch window using Event
+  async windowChangeUsingEvent(locator: Locator): Promise<Page> {
+    const [newPage] = await Promise.all([
+      this.context.waitForEvent("page"),
+      locator.click(),
+    ]);
 
+    await newPage.waitForLoadState();
+    return newPage;
+  }
 
+  //Switch window using Index
+  async windowChangeUsingIndex(locator: Locator, index: number): Promise<Page> {
+    await Promise.all([
+      this.context.waitForEvent("page"),
+      locator.click(),
+    ]);
+
+    const pages = this.context.pages();
+    const selectedPage = pages[index];
+
+    await selectedPage.waitForLoadState();
+    await selectedPage.bringToFront();
+
+    return selectedPage;
+  }
+
+  // Switch Window by Title
+  async switchWindowByTitle(title: string): Promise<Page | null> {
+    const pages = this.context.pages();
+
+    for (const page of pages) {
+      await page.waitForLoadState();
+
+      if ((await page.title()) === title) {
+        await page.bringToFront();
+        return page;
+      }
+    }
+
+    return null;
+  }
+
+  // Switch Window by URL
+  async switchWindowByURL(url: string): Promise<Page | null> {
+    const pages = this.context.pages();
+
+    for (const page of pages) {
+      await page.waitForLoadState();
+
+      if (page.url() === url) {
+        await page.bringToFront();
+        return page;
+      }
+    }
+
+    return null;
+  }
+
+  // Switch to Existing Window
+  async switchToExistingWindow(index: number): Promise<Page> {
+    const pages = this.context.pages();
+
+    await pages[index].bringToFront();
+
+    return pages[index];
+  }
+
+  // Get All Open Windows
+  async getAllOpenWindows(): Promise<Page[]> {
+    return this.context.pages();
+  }
+
+  //Scroll into view using elemnt
+  async scrollIntoView(locator: Locator) {
+    await locator.scrollIntoViewIfNeeded();
+  }
 }
