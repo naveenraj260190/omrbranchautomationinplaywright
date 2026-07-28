@@ -26,7 +26,7 @@ test("dataread", async ({ page }) => {
     noOfChild: number;
   };
   // assigning sheet name
-  let sheetname = "omrBranchTest";
+  let sheetname :string = "omrBranchTest";
   //Mention the workbook -> instructing to read excel file
   let workbook: XLSX.WorkBook = XLSX.readFile(pathforexcel);
   //	- Get the required sheet using the sheet name
@@ -35,7 +35,7 @@ test("dataread", async ({ page }) => {
   let jsonData: ExcelColumn[] = XLSX.utils.sheet_to_json<ExcelColumn>(sheet);
   console.log("JSON data ", jsonData);
 
-  // To print all data using for of
+  // To print all data using for of loop
   for (let i of jsonData) {
     if (i.testScenario === "Verify search hotels with all field") {
       console.log("Username :", i.loginUserName);
@@ -63,6 +63,8 @@ test("dataread", async ({ page }) => {
       console.log("No Of Child", i.noOfChild);
     }
   }
+
+//Retrieving values from find(value) flow
 
   let testScenario1: ExcelColumn | undefined = jsonData.find(
     (value) =>
@@ -98,6 +100,7 @@ test("dataread", async ({ page }) => {
     console.log("No Of Child", testScenario2.noOfChild);
   }
 
+  //Updating values from find(value) flow
  if (testScenario2) 
     {
  testScenario2.noOfChild = 4;
