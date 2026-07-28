@@ -10,11 +10,17 @@ import {
 } from "@playwright/test";
 import { toArrayBuffer } from "node:ffi";
 import { SourceTextModule } from "node:vm";
+import { ExcelUtils } from "./ExcelUtility.js";
 
-export class BaseClass {
+export class BaseClass extends ExcelUtils {
   browser!: Browser;
   context!: BrowserContext;
   page!: Page;
+
+  constructor(page: Page) {
+    super();
+    this.page = page;
+  }
 
   // Launch Chrome Brwser
   async browserLaunchChrome() {
@@ -432,8 +438,10 @@ export class BaseClass {
   async scrollIntoView(locator: Locator) {
     await locator.scrollIntoViewIfNeeded();
   }
-//mouse Over
+  //mouse Over
   async hover(locator: Locator) {
     await locator.hover();
   }
+
+  //frame
 }
